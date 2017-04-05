@@ -16,6 +16,7 @@ using Eigen::VectorXd;
 using Eigen::MatrixXd;
 
 class UKF {
+public:
   /**
    * Constructor
    */
