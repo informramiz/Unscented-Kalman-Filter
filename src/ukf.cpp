@@ -107,4 +107,61 @@ void UKF::GenerateSigmaPoints(MatrixXd * Xsig_out) {
 }
 
 
+VectorXd UKF::PredictSingleSigmaPoint(const VectorXd & x_aug, double delta_t) {
+  double v = x_aug(2);
+  double yaw_angle = x_aug(3);
+  double yaw_rate = x_aug(4);
+  double noise_longitudinal_a = x_aug(5);
+  double noise_yaw_a = x_aug(6);
+
+  //do some common calculations
+  double sin_yaw_angle = std::sin(yaw_angle);
+  double cos_yaw_angle = std::cos(yaw_angle);
+  double delta_t_square = delta_t * delta_t;
+
+  double px_change = 0;
+  double py_change = 0;
+
+  if (std::fabs(yaw_rate) > 0.001) {
+    //calculations specific to this case
+    double c1 = v / yaw_rate;
+    double c2 = yaw_angle + yaw_rate * delta_t;
+    double sin_c2 = std::sin(c2);
+    double cos_c2 = std::cos(c2);
+
+    px_change = (c1 * (sin_c2 - sin_yaw_angle));
+    py_change = (c1 * (-cos_c2 + cos_yaw_angle));
+  }
+  else {
+    px_change = (v * cos_yaw_angle * delta_t);
+    py_change = (v * sin_yaw_angle * delta_t);
+  }
+
+  VectorXd x_change = VectorXd(5);
+  x_change << px_change,
+              py_change,
+              0,
+              (yaw_rate * delta_t),
+              0;
+
+  VectorXd x_noise = VectorXd(5);
+  x_noise <<  (0.5 * delta_t_square * cos_yaw_angle * noise_longitudinal_a),
+              (0.5 * delta_t_square * sin_yaw_angle * noise_longitudinal_a),
+              (delta_t * noise_longitudinal_a),
+              (0.5 * delta_t_square * noise_yaw_a),
+              (delta_t * noise_yaw_a);
+
+  //add noise to change in x
+  x_change += x_noise;
+
+  //extract state vector x from augmented state vector (contains last 2 elements as noise values after augmentation)
+  VectorXd x_old = x_aug.head(5);
+
+  //calculate total change in x state
+  VectorXd x_prediction = x_old + x_change;
+
+  return x_prediction;
+}
+
+
 

@@ -42,6 +42,14 @@ public:
   void PredictMeanAndCovariance(VectorXd* x_pred, MatrixXd* P_pred);
   void PredictRadarMeasurement(VectorXd* z_out, MatrixXd* S_out);
   void UpdateState(VectorXd* x_out, MatrixXd* P_out);
+
+private:
+  /**
+   * Predicts a single sigma point based on augmented sigma point
+   * provided
+   * @param x, augmented 7D sigma point
+   */
+  VectorXd PredictSingleSigmaPoint(const VectorXd & x_aug, double delta_t);
 };
 
 
