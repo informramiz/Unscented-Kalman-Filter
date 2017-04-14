@@ -106,6 +106,41 @@ void UKF::GenerateSigmaPoints(MatrixXd * Xsig_out) {
   */
 }
 
+void UKF::SigmaPointPrediction(MatrixXd* Xsig_out) {
+  //set state dimension
+  int n_x = 5;
+  //set augmented state dimension
+  int n_aug = 7;
+
+  //create example sigma point matrix
+  MatrixXd Xsig_aug = MatrixXd(n_aug, 2 * n_aug + 1);
+  Xsig_aug <<
+      5.7441,  5.85768,   5.7441,   5.7441,   5.7441,   5.7441,   5.7441,   5.7441,   5.63052,   5.7441,   5.7441,   5.7441,   5.7441,   5.7441,   5.7441,
+        1.38,  1.34566,  1.52806,     1.38,     1.38,     1.38,     1.38,     1.38,   1.41434,  1.23194,     1.38,     1.38,     1.38,     1.38,     1.38,
+      2.2049,  2.28414,  2.24557,  2.29582,   2.2049,   2.2049,   2.2049,   2.2049,   2.12566,  2.16423,  2.11398,   2.2049,   2.2049,   2.2049,   2.2049,
+      0.5015,  0.44339, 0.631886, 0.516923, 0.595227,   0.5015,   0.5015,   0.5015,   0.55961, 0.371114, 0.486077, 0.407773,   0.5015,   0.5015,   0.5015,
+      0.3528, 0.299973, 0.462123, 0.376339,  0.48417, 0.418721,   0.3528,   0.3528,  0.405627, 0.243477, 0.329261,  0.22143, 0.286879,   0.3528,   0.3528,
+           0,        0,        0,        0,        0,        0,  0.34641,        0,         0,        0,        0,        0,        0, -0.34641,        0,
+           0,        0,        0,        0,        0,        0,        0,  0.34641,         0,        0,        0,        0,        0,        0, -0.34641;
+
+  //create matrix with predicted sigma points as columns
+  MatrixXd Xsig_pred = MatrixXd(n_x, 2 * n_aug + 1);
+
+  //time diff in secs
+  double delta_t = 0.1;
+
+  //predict sigma points
+  //avoid division by zero
+  //write predicted sigma points into right column
+  for(int i = 0; i < Xsig_aug.cols(); ++i) {
+//    if (i == 7) {
+//      std::cout << "i == " << i << ", x = " << std::endl << Xsig_aug.col(i) << std::endl;
+//    }
+    Xsig_pred.col(i) = PredictSingleSigmaPoint(Xsig_aug.col(i), delta_t);
+  }
+
+  *Xsig_out = Xsig_pred;
+}
 
 VectorXd UKF::PredictSingleSigmaPoint(const VectorXd & x_aug, double delta_t) {
   double v = x_aug(2);
