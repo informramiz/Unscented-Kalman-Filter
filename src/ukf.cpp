@@ -133,9 +133,6 @@ void UKF::SigmaPointPrediction(MatrixXd* Xsig_out) {
   //avoid division by zero
   //write predicted sigma points into right column
   for(int i = 0; i < Xsig_aug.cols(); ++i) {
-//    if (i == 7) {
-//      std::cout << "i == " << i << ", x = " << std::endl << Xsig_aug.col(i) << std::endl;
-//    }
     Xsig_pred.col(i) = PredictSingleSigmaPoint(Xsig_aug.col(i), delta_t);
   }
 
