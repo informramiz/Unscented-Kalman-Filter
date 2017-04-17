@@ -14,15 +14,15 @@ using namespace std;
 int main() {
 	UKF ukf;
 
-	VectorXd x = VectorXd(5);
-	MatrixXd P = MatrixXd(5, 5);
-	ukf.PredictMeanAndCovariance(&x, &P);
+	VectorXd z = VectorXd::Zero(3);
+	MatrixXd S = MatrixXd::Zero(3, 3);
+	ukf.PredictRadarMeasurement(&z, &S);
 
 	//print result
-  std::cout << "Predicted state" << std::endl;
-  std::cout << x << std::endl;
-  std::cout << "Predicted covariance matrix" << std::endl;
-  std::cout << P << std::endl;
+  std::cout << "Predicted measurement mean z" << std::endl;
+  std::cout << z << std::endl;
+  std::cout << "Predicted measurement covariance matrix S" << std::endl;
+  std::cout << S << std::endl;
 
 	return 0;
 }
