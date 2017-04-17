@@ -12,14 +12,17 @@
 using namespace std;
 
 int main() {
-	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
-
-	MatrixXd Xsig_pred = MatrixXd(15, 5);
 	UKF ukf;
-	ukf.SigmaPointPrediction(&Xsig_pred);
+
+	VectorXd x = VectorXd(5);
+	MatrixXd P = MatrixXd(5, 5);
+	ukf.PredictMeanAndCovariance(&x, &P);
 
 	//print result
-  std::cout << "Xsig = " << std::endl << Xsig_pred << std::endl;
+  std::cout << "Predicted state" << std::endl;
+  std::cout << x << std::endl;
+  std::cout << "Predicted covariance matrix" << std::endl;
+  std::cout << P << std::endl;
 
 	return 0;
 }

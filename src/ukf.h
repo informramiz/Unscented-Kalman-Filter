@@ -50,6 +50,11 @@ private:
    * @param x, augmented 7D sigma point
    */
   VectorXd PredictSingleSigmaPoint(const VectorXd & x_aug, double delta_t);
+  /**
+   * Normalize an angle between -PI and PI
+   * @param angle to be normalized
+   */
+  double NormalizeAngle(double angle);
 };
 
 
