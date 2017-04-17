@@ -298,4 +298,29 @@ double UKF::NormalizeAngle(double angle) {
   return angle;
 }
 
+Eigen::VectorXd MapToPolar(const Eigen::VectorXd& x) {
+
+  float px = x(0);
+  float py = x(1);
+  float v = x(2);
+  float yaw_angle = x(3);
+  float yaw_rate = x(4);
+
+  //calculate speed vx and vy components
+  float vx = v * cos(yaw_angle);
+  float vy = v * sin(yaw_angle);
+
+  float px2_py2_sum = px * px + py * py;
+  float px2_py2_sum_sqrt = sqrt(px2_py2_sum);
+
+  Eigen::VectorXd z_predicted(3);
+  //apply non-linear transformation h(x)
+  z_predicted <<  px2_py2_sum_sqrt,
+                  atan2(py, px),
+                  ((px * vx + py * vy) / px2_py2_sum_sqrt);
+
+  return z_predicted;
+}
+
+
 
