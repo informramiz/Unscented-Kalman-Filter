@@ -57,6 +57,7 @@ private:
    */
   Eigen::VectorXd MapToPolar(const Eigen::VectorXd& x);
 
+
   ///* initially set to false, set to true in first call of ProcessMeasurement
   bool is_initialized_;
 
@@ -85,19 +86,19 @@ private:
   double std_yawdd_;
 
   ///* Laser measurement noise standard deviation position1 in m
-  double std_laspx_;
+  double std_laser_px_;
 
   ///* Laser measurement noise standard deviation position2 in m
-  double std_laspy_;
+  double std_laser_py_;
 
   ///* Radar measurement noise standard deviation radius in m
-  double std_radr_;
+  double std_radar_r_;
 
   ///* Radar measurement noise standard deviation angle in rad
-  double std_radphi_;
+  double std_radar_phi_;
 
   ///* Radar measurement noise standard deviation radius change in m/s
-  double std_radrd_ ;
+  double std_radar_rd_ ;
 
   ///* Weights of sigma points
   VectorXd weights_;
@@ -107,6 +108,9 @@ private:
 
   ///* Augmented state dimension
   int n_aug_;
+
+  ///* Total sigma points count
+  int total_sigma_points_;
 
   ///* Sigma point spreading parameter
   double lambda_;
