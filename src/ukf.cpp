@@ -391,7 +391,7 @@ Eigen::VectorXd UKF::MapToPolar(const Eigen::VectorXd& x) {
   return z_predicted;
 }
 
-void UKF::UpdateState(VectorXd* x_out, MatrixXd* P_out) {
+void UKF::UpdateRadarState(VectorXd* x_out, MatrixXd* P_out) {
   //set state dimension
   int n_x = 5;
 

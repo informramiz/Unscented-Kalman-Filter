@@ -16,7 +16,7 @@ int main() {
 
 	VectorXd x = VectorXd::Zero(5);
 	MatrixXd P = MatrixXd::Zero(5, 5);
-	ukf.UpdateState(&x, &P);
+	ukf.UpdateRadarState(&x, &P);
 
 	//print result
   std::cout << "Updated mean x" << std::endl;
