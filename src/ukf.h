@@ -11,6 +11,7 @@
 
 #include <vector>
 #include "Eigen/Dense"
+#include "tools.h"
 
 using Eigen::VectorXd;
 using Eigen::MatrixXd;
@@ -50,11 +51,6 @@ private:
    * @param x, augmented 7D sigma point
    */
   VectorXd PredictSingleSigmaPoint(const VectorXd & x_aug, double delta_t);
-  /**
-   * Normalize an angle between -PI and PI
-   * @param angle to be normalized
-   */
-  double NormalizeAngle(double angle);
   /**
    * Non-linear function h(x) that maps cartesian coordinates @param x =(px, py, vx, vy)
    * to polar coordinates (range=rho, angle=phi, range_rate=rho_dot)

@@ -248,7 +248,7 @@ void UKF::PredictMeanAndCovariance(VectorXd* x_out, MatrixXd* P_out) {
     MatrixXd X_mean_distance = (Xsig_pred.colwise() - x);
     //angle normalization
     for (int i = 0; i < X_mean_distance.cols(); ++i) {
-      X_mean_distance.col(i)(3) = NormalizeAngle(X_mean_distance.col(i)(3));
+      X_mean_distance.col(i)(3) = Tools::NormalizeAngle(X_mean_distance.col(i)(3));
     }
     //multiply each sigma point mean distance with it's weight
     MatrixXd X_weighted_mean_distance = (X_mean_distance.array() * W.array()).matrix();
@@ -282,17 +282,6 @@ void UKF::PredictMeanAndCovariance(VectorXd* x_out, MatrixXd* P_out) {
 
           -0.00299378 0.00791091 0.000792973 0.0112491 0.0126972
      */
-}
-
-double UKF::NormalizeAngle(double angle) {
-  //angle normalization
-  while (angle > M_PI)
-    angle -= 2.*M_PI;
-
-  while (angle < -M_PI)
-    angle += 2. * M_PI;
-
-  return angle;
 }
 
 void UKF::PredictRadarMeasurement(VectorXd* z_out, MatrixXd* S_out) {
@@ -368,7 +357,7 @@ void UKF::PredictRadarMeasurement(VectorXd* z_out, MatrixXd* S_out) {
   MatrixXd Z_mean_distance = (Zsig_pred.colwise() - z_predicted);
   //angle normalization
   for (int i = 0; i < Z_mean_distance.cols(); ++i) {
-    Z_mean_distance.col(i)(1) = NormalizeAngle(Z_mean_distance.col(i)(1));
+    Z_mean_distance.col(i)(1) = Tools::NormalizeAngle(Z_mean_distance.col(i)(1));
   }
   //multiply each sigma point mean distance with it's weight
   MatrixXd Z_weighted_mean_distance = (Z_mean_distance.array() * W.array()).matrix();
@@ -488,14 +477,14 @@ void UKF::UpdateState(VectorXd* x_out, MatrixXd* P_out) {
   MatrixXd X_mean_distance = (Xsig_pred.colwise() - x);
   //angle normalization
   for (int i = 0; i < X_mean_distance.cols(); ++i) {
-    X_mean_distance.col(i)(3) = NormalizeAngle(X_mean_distance.col(i)(3));
+    X_mean_distance.col(i)(3) = Tools::NormalizeAngle(X_mean_distance.col(i)(3));
   }
   MatrixXd X_mean_distance_weighted = (X_mean_distance.array() * W.array()).matrix();
 
   MatrixXd Z_mean_distance = Zsig.colwise() - z_pred;
   //angle normalization
   for (int i = 0; i < Z_mean_distance.cols(); ++i) {
-    Z_mean_distance.col(i)(1) = NormalizeAngle(Z_mean_distance.col(i)(1));
+    Z_mean_distance.col(i)(1) = Tools::NormalizeAngle(Z_mean_distance.col(i)(1));
   }
   Tc = X_mean_distance_weighted * Z_mean_distance.transpose();
 
