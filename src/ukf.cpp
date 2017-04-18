@@ -10,7 +10,72 @@
 #include "ukf.h"
 
 UKF::UKF() {
-  //TODO
+  //if set false means filter is not yet initialized
+  is_initialized_ = false;
+
+  // if this is false, laser measurements will be ignored (except during init)
+  use_laser_ = true;
+
+  // if this is false, radar measurements will be ignored (except during init)
+  use_radar_ = true;
+
+  // initial state vector
+  x_ = VectorXd(5);
+
+  // initial covariance matrix
+  P_ = MatrixXd(5, 5);
+
+  //TODO: Fine this noise parameter value
+  // Process noise standard deviation longitudinal acceleration in m/s^2
+  std_a_ = 2;
+
+  //TODO: Fine this noise parameter value
+  // Process noise standard deviation yaw acceleration in rad/s^2
+  std_yawdd_ = 1;
+
+  // Laser measurement noise standard deviation position1 in m
+  std_laser_px_ = 0.15;
+
+  // Laser measurement noise standard deviation position2 in m
+  std_laser_py_ = 0.15;
+
+  // Radar measurement noise standard deviation radius in m
+  std_radar_r_ = 0.3;
+
+  // Radar measurement noise standard deviation angle in rad
+  std_radar_phi_ = 0.03;
+
+  // Radar measurement noise standard deviation radius change in m/s
+  std_radar_rd_ = 0.3;
+
+  NIS_laser_ = 0;
+  NIS_radar_ = 0;
+
+  //augmented state mean dimension
+  n_aug_ = 7;
+
+  //state mean dimension
+  n_x_ = 5;
+
+  time_us_ = 0;
+
+  //calculate total sigma points count
+  total_sigma_points_ = 2 * n_aug_ + 1;
+
+  //set spreading parameter
+  lambda_ = 3 - n_aug_;
+
+  //initialize weights
+  weights_ = VectorXd(total_sigma_points_);
+  weights_.fill(1 / (2 * (lambda_ + n_aug_)));
+  weights_(0) = lambda_ / (lambda_ + n_aug_);
+
+  //initialize predicted sigma points matrix
+  Xsig_pred_ = MatrixXd::Zero(n_x_, total_sigma_points_);
+
+  //initialize state mean and convariance
+  x_ = VectorXd::Zero(n_x_);
+  P_ = MatrixXd::Zero(n_x_, n_x_);
 }
 
 UKF::~UKF() {
