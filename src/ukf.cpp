@@ -419,16 +419,30 @@ void UKF::ProcessMeasurement(MeasurementPackage measurement_package) {
 
    //compute the time elapsed between the current and previous measurements in seconds
    double detla_t = (measurement_package.timestamp_ - timestamp_) / 1000000.0;
+
    //update timestamp to new measurement received timestamp
    timestamp_ = measurement_package.timestamp_;
 
    Predict(detla_t);
 
    if(measurement_package.sensor_type_ == MeasurementPackage::RADAR) {
+     double rho = measurement_package.raw_measurements_[0];
+     double phi = measurement_package.raw_measurements_[1];
+     double rho_dot = measurement_package.raw_measurements_[2];
+
+     //check to avoid division by zero
+     double px = rho * cos(phi);
+     double py = rho * sin(phi);
+     if(px == 0 || py == 0) {
+       return;
+     } else if(fabs(px * px + py * py) < 0.0001) {
+       return;
+     }
+
      VectorXd z = VectorXd(3);
-     z <<  measurement_package.raw_measurements_[0],
-           measurement_package.raw_measurements_[1],
-           measurement_package.raw_measurements_[2];
+     z <<  rho,
+           phi,
+           rho_dot;
 
      Update(z, measurement_package.sensor_type_);
 
