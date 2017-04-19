@@ -39,7 +39,6 @@ public:
    * and I will add code to each of them incrementally
    */
   void GenerateSigmaPoints(MatrixXd* Xsig_out);
-  void AugmentedSigmaPoints(MatrixXd* Xsig_out);
   void SigmaPointPrediction(const MatrixXd & Xsig_aug, double delta_t, MatrixXd* Xsig_out);
   void PredictMeanAndCovariance();
   void PredictRadarMeasurement(VectorXd* z_out, MatrixXd* S_out, MatrixXd* Zsig_out);
