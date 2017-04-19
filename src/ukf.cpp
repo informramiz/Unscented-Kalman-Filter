@@ -396,6 +396,15 @@ void UKF::ProcessMeasurement(MeasurementPackage measurement_package) {
    std::cout << "measurement received: " << std::endl;
    double detla_t = measurement_package.timestamp_ - timestamp_;
    Predict(detla_t);
+
+   if(measurement_package.sensor_type_ == MeasurementPackage::RADAR) {
+     VectorXd z = VectorXd(3);
+     z <<  measurement_package.raw_measurements_[0],
+           measurement_package.raw_measurements_[0],
+           measurement_package.raw_measurements_[0];
+
+     Update(z, measurement_package.sensor_type_);
+   }
 }
 
 void UKF::Predict(double delta_t) {
@@ -410,10 +419,16 @@ void UKF::Predict(double delta_t) {
   PredictMeanAndCovariance();
 }
 
-void UKF::Update(const VectorXd& z) {
+void UKF::Update(const VectorXd& z, MeasurementPackage::SensorType sensor_type) {
   //check laser type
   //call PredictMeasurement____(Radar|Lidar) method
-  //call UpdateStateWith__(Radar|Lidar) method
+    //call UpdateStateWith__(Radar|Lidar) method
+  if(sensor_type == MeasurementPackage::RADAR) {
+    UpdateStateWithRadar(z);
+  }
+  else if(sensor_type == MeasurementPackage::LASER) {
+
+  }
 }
 
 Eigen::VectorXd UKF::GetMeanState() const {

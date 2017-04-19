@@ -40,7 +40,7 @@ public:
    * the measurement z
    * @param z, measurement received from sensor
    */
-  void Update(const VectorXd& z);
+  void Update(const VectorXd& z, MeasurementPackage::SensorType sensor_type);
 
   /**
    * Following functions define structure of UKF
