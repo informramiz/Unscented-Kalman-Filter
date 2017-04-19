@@ -482,7 +482,7 @@ void UKF::Update(const VectorXd& z, MeasurementPackage::SensorType sensor_type) 
     UpdateStateWithRadar(z);
   }
   else if(sensor_type == MeasurementPackage::LASER) {
-
+    UpdateStateWithLaser(z);
   }
 }
 
