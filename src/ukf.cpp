@@ -124,56 +124,27 @@ void UKF::GenerateSigmaPoints(MatrixXd * Xsig_out) {
   P_aug.bottomRightCorner(2, 2) = Q_;
 
   //create a sigma point matrix
-  Xsig_pred_ = MatrixXd(n_aug_, total_sigma_points_);
+  MatrixXd Xsig_aug = MatrixXd(n_aug_, total_sigma_points_);
 
   //calculate square root of P_aug by using Cholesky decomposition
   MatrixXd A = P_aug.llt().matrixL();
 
   //calculate sigma points
   //rule part1: first point is mean x so
-  Xsig_pred_.col(0) = x_aug;
+  Xsig_aug.col(0) = x_aug;
 
   //rule part2: calculate next 1 to n_aug points
-  Xsig_pred_.block(0, 1, n_aug_, n_aug_) = (std::sqrt(lambda_ + n_aug_) * A).colwise() + x_aug;
+  Xsig_aug.block(0, 1, n_aug_, n_aug_) = (std::sqrt(lambda_ + n_aug_) * A).colwise() + x_aug;
 
   //rule part3: calculate next n_aug to 2n_aug points
-  Xsig_pred_.block(0, n_aug_ + 1, n_aug_, n_aug_) = ( -1 * sqrt(lambda_ + n_aug_) * A).colwise() + x_aug;
+  Xsig_aug.block(0, n_aug_ + 1, n_aug_, n_aug_) = ( -1 * sqrt(lambda_ + n_aug_) * A).colwise() + x_aug;
 
-//  *Xsig_out = Xsigma;
-  /* expected result:
-     Xsig_aug =
-    5.7441  5.85768   5.7441   5.7441   5.7441   5.7441   5.7441   5.7441  5.63052   5.7441   5.7441   5.7441   5.7441   5.7441   5.7441
-      1.38  1.34566  1.52806     1.38     1.38     1.38     1.38     1.38  1.41434  1.23194     1.38     1.38     1.38     1.38     1.38
-    2.2049  2.28414  2.24557  2.29582   2.2049   2.2049   2.2049   2.2049  2.12566  2.16423  2.11398   2.2049   2.2049   2.2049   2.2049
-    0.5015  0.44339 0.631886 0.516923 0.595227   0.5015   0.5015   0.5015  0.55961 0.371114 0.486077 0.407773   0.5015   0.5015   0.5015
-    0.3528 0.299973 0.462123 0.376339  0.48417 0.418721   0.3528   0.3528 0.405627 0.243477 0.329261  0.22143 0.286879   0.3528   0.3528
-         0        0        0        0        0        0  0.34641        0        0        0        0        0        0 -0.34641        0
-         0        0        0        0        0        0        0  0.34641        0        0        0        0        0        0 -0.34641
-  */
+  *Xsig_out = Xsig_aug;
 }
 
-void UKF::SigmaPointPrediction(MatrixXd* Xsig_out) {
-  //set state dimension
-  int n_x = 5;
-  //set augmented state dimension
-  int n_aug = 7;
-
-  //create example sigma point matrix
-  MatrixXd Xsig_aug = MatrixXd(n_aug, 2 * n_aug + 1);
-  Xsig_aug <<
-      5.7441,  5.85768,   5.7441,   5.7441,   5.7441,   5.7441,   5.7441,   5.7441,   5.63052,   5.7441,   5.7441,   5.7441,   5.7441,   5.7441,   5.7441,
-        1.38,  1.34566,  1.52806,     1.38,     1.38,     1.38,     1.38,     1.38,   1.41434,  1.23194,     1.38,     1.38,     1.38,     1.38,     1.38,
-      2.2049,  2.28414,  2.24557,  2.29582,   2.2049,   2.2049,   2.2049,   2.2049,   2.12566,  2.16423,  2.11398,   2.2049,   2.2049,   2.2049,   2.2049,
-      0.5015,  0.44339, 0.631886, 0.516923, 0.595227,   0.5015,   0.5015,   0.5015,   0.55961, 0.371114, 0.486077, 0.407773,   0.5015,   0.5015,   0.5015,
-      0.3528, 0.299973, 0.462123, 0.376339,  0.48417, 0.418721,   0.3528,   0.3528,  0.405627, 0.243477, 0.329261,  0.22143, 0.286879,   0.3528,   0.3528,
-           0,        0,        0,        0,        0,        0,  0.34641,        0,         0,        0,        0,        0,        0, -0.34641,        0,
-           0,        0,        0,        0,        0,        0,        0,  0.34641,         0,        0,        0,        0,        0,        0, -0.34641;
-
+void UKF::SigmaPointPrediction(const MatrixXd & Xsig_aug, double delta_t, MatrixXd* Xsig_out) {
   //create matrix with predicted sigma points as columns
-  MatrixXd Xsig_pred = MatrixXd(n_x, 2 * n_aug + 1);
-
-  //time diff in secs
-  double delta_t = 0.1;
+  MatrixXd Xsig_pred = MatrixXd(n_x_, total_sigma_points_);
 
   //predict sigma points
   //avoid division by zero
@@ -183,14 +154,6 @@ void UKF::SigmaPointPrediction(MatrixXd* Xsig_out) {
   }
 
   *Xsig_out = Xsig_pred;
-
-// Expected result
-//  Xsig_pred =
-//   5.93553  6.06251  5.92217   5.9415  5.92361  5.93516  5.93705  5.93553  5.80832  5.94481  5.92935  5.94553  5.93589  5.93401  5.93553
-//   1.48939  1.44673  1.66484  1.49719    1.508  1.49001  1.49022  1.48939   1.5308  1.31287  1.48182  1.46967  1.48876  1.48855  1.48939
-//    2.2049  2.28414  2.24557  2.29582   2.2049   2.2049  2.23954   2.2049  2.12566  2.16423  2.11398   2.2049   2.2049  2.17026   2.2049
-//   0.53678 0.473387 0.678098 0.554557 0.643644 0.543372  0.53678 0.538512 0.600173 0.395462 0.519003 0.429916 0.530188  0.53678 0.535048
-//    0.3528 0.299973 0.462123 0.376339  0.48417 0.418721   0.3528 0.387441 0.405627 0.243477 0.329261  0.22143 0.286879   0.3528 0.318159
 }
 
 VectorXd UKF::PredictSingleSigmaPoint(const VectorXd & x_aug, double delta_t) {
