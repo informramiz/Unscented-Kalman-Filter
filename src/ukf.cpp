@@ -68,6 +68,11 @@ UKF::UKF() {
               0, std_radar_phi_ * std_radar_phi_, 0,
               0, 0, std_radar_rd_ * std_radar_rd_;
 
+  //initialize noise covariance matrix
+  Q_ = MatrixXd(2, 2);
+  Q_ << std_a_ * std_a_, 0,
+        0,  std_yawdd_ * std_yawdd_;
+
   NIS_laser_ = 0;
   NIS_radar_ = 0;
 
