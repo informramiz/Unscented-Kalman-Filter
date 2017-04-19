@@ -127,6 +127,12 @@ private:
   ///* State dimension
   int n_x_;
 
+  ///* Radar measurement state dimension, radar can measure r, phi, and r_dot
+  int n_z_radar_;
+
+  ///* Laser measurement state dimension, laser can measure px, py
+  int n_z_laser_;
+
   ///* Augmented state dimension
   int n_aug_;
 

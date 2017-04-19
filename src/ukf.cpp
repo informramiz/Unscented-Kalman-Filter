@@ -82,6 +82,12 @@ UKF::UKF() {
   //state mean dimension
   n_x_ = 5;
 
+  //radar measurement state dimension
+  n_z_radar_ = 3;
+
+  //laser measurement state dimension
+  n_z_laser = 2;
+
   timestamp_ = 0;
 
   //calculate total sigma points count
