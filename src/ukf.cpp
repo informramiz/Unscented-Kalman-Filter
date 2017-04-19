@@ -233,54 +233,12 @@ void UKF::PredictMeanAndCovariance() {
     P_ = X_weighted_mean_distance * X_mean_distance.transpose();
 }
 
-void UKF::PredictRadarMeasurement(VectorXd* z_out, MatrixXd* S_out) {
-  //set state dimension
-  int n_x = 5;
-
-  //set augmented dimension
-  int n_aug = 7;
-
+void UKF::PredictRadarMeasurement(VectorXd* z_out, MatrixXd* S_out, MatrixXd* Zsig_out) {
   //set measurement dimension, radar can measure r, phi, and r_dot
   int n_z = 3;
 
-  //define spreading parameter
-  double lambda = 3 - n_aug;
-
-  //calculate total sigma points
-  int total_sigma_points = 2 * n_aug + 1;
-
-  //create vector for weights
-  VectorXd weights = VectorXd(total_sigma_points);
-  //set weights
-  weights.fill(1 / (2 * (lambda + n_aug)));
-  weights(0) = lambda / (lambda + n_aug);
-
-  //radar measurement noise standard deviation radius/range in m
-  double std_radar_range = 0.3;
-
-  //radar measurement noise standard deviation angle in radians
-  double std_radar_phi = 0.0175;
-
-  //radar measurement noise standard deviation radius change (range rate) in m/s
-  double std_radar_range_rate = 0.1;
-
-  //calculate Measurement noise matrix
-  MatrixXd R = MatrixXd::Zero(n_z, n_z);
-  R <<  std_radar_range * std_radar_range, 0, 0,
-        0, std_radar_phi * std_radar_phi, 0,
-        0, 0, std_radar_range_rate * std_radar_range_rate;
-
-  //A sample matrix for predicted sigma points
-  MatrixXd Xsig_pred = MatrixXd(n_x, total_sigma_points);
-  Xsig_pred <<
-           5.9374,  6.0640,   5.925,  5.9436,  5.9266,  5.9374,  5.9389,  5.9374,  5.8106,  5.9457,  5.9310,  5.9465,  5.9374,  5.9359,  5.93744,
-             1.48,  1.4436,   1.660,  1.4934,  1.5036,    1.48,  1.4868,    1.48,  1.5271,  1.3104,  1.4787,  1.4674,    1.48,  1.4851,    1.486,
-            2.204,  2.2841,  2.2455,  2.2958,   2.204,   2.204,  2.2395,   2.204,  2.1256,  2.1642,  2.1139,   2.204,   2.204,  2.1702,   2.2049,
-           0.5367, 0.47338, 0.67809, 0.55455, 0.64364, 0.54337,  0.5367, 0.53851, 0.60017, 0.39546, 0.51900, 0.42991, 0.530188,  0.5367, 0.535048,
-            0.352, 0.29997, 0.46212, 0.37633,  0.4841, 0.41872,   0.352, 0.38744, 0.40562, 0.24347, 0.32926,  0.2214, 0.28687,   0.352, 0.318159;
-
   //Matrix for sigma points in measurement space
-  MatrixXd Zsig_pred = MatrixXd(n_z, total_sigma_points);
+  MatrixXd Zsig_pred = MatrixXd(n_z, total_sigma_points_);
 
   //Create a vector for predicted measurement mean
   VectorXd z_predicted = VectorXd(n_z);
@@ -289,12 +247,12 @@ void UKF::PredictRadarMeasurement(VectorXd* z_out, MatrixXd* S_out) {
   MatrixXd S = MatrixXd::Zero(n_z, n_z);
 
   //transform sigma points into measurement space
-  for (int i = 0; i < Xsig_pred.cols(); ++i) {
-    Zsig_pred.col(i) = MapToPolar(Xsig_pred.col(i));
+  for (int i = 0; i < Xsig_pred_.cols(); ++i) {
+    Zsig_pred.col(i) = MapToPolar(Xsig_pred_.col(i));
   }
 
   //for ease of calculation let's make a matrix of weights
-  MatrixXd W = weights.transpose().replicate(Zsig_pred.rows(), 1);
+  MatrixXd W = weights_.transpose().replicate(Zsig_pred.rows(), 1);
 
   //-----predict state mean-------
   //multiply weights with sigma points element wise
@@ -310,10 +268,11 @@ void UKF::PredictRadarMeasurement(VectorXd* z_out, MatrixXd* S_out) {
   }
   //multiply each sigma point mean distance with it's weight
   MatrixXd Z_weighted_mean_distance = (Z_mean_distance.array() * W.array()).matrix();
-  S = Z_weighted_mean_distance * Z_mean_distance.transpose() + R;
+  S = Z_weighted_mean_distance * Z_mean_distance.transpose() + R_radar_;
 
   *z_out = z_predicted;
   *S_out = S;
+  *Zsig_out = Zsig_pred;
 }
 
 Eigen::VectorXd UKF::MapToPolar(const Eigen::VectorXd& x) {

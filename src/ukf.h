@@ -42,7 +42,7 @@ public:
   void AugmentedSigmaPoints(MatrixXd* Xsig_out);
   void SigmaPointPrediction(const MatrixXd & Xsig_aug, double delta_t, MatrixXd* Xsig_out);
   void PredictMeanAndCovariance();
-  void PredictRadarMeasurement(VectorXd* z_out, MatrixXd* S_out);
+  void PredictRadarMeasurement(VectorXd* z_out, MatrixXd* S_out, MatrixXd* Zsig_out);
   void UpdateRadarState(VectorXd* x_out, MatrixXd* P_out);
 
   /**
