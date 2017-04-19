@@ -74,7 +74,7 @@ UKF::UKF() {
         0,  std_yawdd_ * std_yawdd_;
 
   //initialize the state transition matrix H for laser
-  H_laser_ = MatrixXd(5, 5);
+  H_laser_ = MatrixXd(2, 5);
   H_laser_ << 1, 0, 0, 0, 0,
               0, 1, 0, 0, 0;
 
@@ -128,7 +128,6 @@ void UKF::Init(const MeasurementPackage& measurement_package) {
   //first measurement
   std::cout << "EKF: " << std::endl;
   x_ = VectorXd(5);
-  x_ << 1, 1, 1, 1, 1;
 
   if (measurement_package.sensor_type_ == MeasurementPackage::RADAR) {
     //Convert radar from polar to cartesian coordinates and initialize state.
@@ -384,6 +383,24 @@ void UKF::UpdateStateWithRadar(const VectorXd & z) {
   P_ = P_ - K * S * K.transpose();
 }
 
+void UKF::UpdateStateWithLaser(const VectorXd& z) {
+  //calculate the difference between
+  //predicted and actual measurement
+  VectorXd y = z - H_laser_ * x_;
+
+  //calculate Kalman Gain
+  MatrixXd S = H_laser_ * P_ * H_laser_.transpose() + R_laser_;
+  MatrixXd K = P_ * H_laser_.transpose() * S.inverse();
+
+  //update the state based on Kalman gain and difference between our belief (x)
+  //and measurement received.
+  x_ = x_ + K * y;
+
+  // update the state covariance/uncertainty based on measurement
+  MatrixXd I = MatrixXd::Identity(x_.size(), x_.size());
+  P_ = (I - K * H_laser_) * P_;
+}
+
 /**
  * @param {MeasurementPackage} measurement_package The latest measurement data of
  * either radar or laser.
@@ -398,16 +415,28 @@ void UKF::ProcessMeasurement(MeasurementPackage measurement_package) {
      return;
    }
 
-   std::cout << "measurement received: " << std::endl;
-   double detla_t = measurement_package.timestamp_ - timestamp_;
+//   std::cout << "measurement received: " << std::endl;
+
+   //compute the time elapsed between the current and previous measurements in seconds
+   double detla_t = (measurement_package.timestamp_ - timestamp_) / 1000000.0;
+   //update timestamp to new measurement received timestamp
+   timestamp_ = measurement_package.timestamp_;
+
    Predict(detla_t);
 
    if(measurement_package.sensor_type_ == MeasurementPackage::RADAR) {
      VectorXd z = VectorXd(3);
      z <<  measurement_package.raw_measurements_[0],
-           measurement_package.raw_measurements_[0],
-           measurement_package.raw_measurements_[0];
+           measurement_package.raw_measurements_[1],
+           measurement_package.raw_measurements_[2];
 
+     Update(z, measurement_package.sensor_type_);
+
+   } else if(measurement_package.sensor_type_ == MeasurementPackage::LASER) {
+
+     VectorXd z = VectorXd(2);
+     z << measurement_package.raw_measurements_[0],
+          measurement_package.raw_measurements_[1];
      Update(z, measurement_package.sensor_type_);
    }
 }
