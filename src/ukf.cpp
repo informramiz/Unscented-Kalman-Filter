@@ -617,5 +617,13 @@ Eigen::VectorXd UKF::GetMeanState() const {
   return x_;
 }
 
+double UKF::GetLaserNIS() const {
+  return NIS_laser_;
+}
+
+double UKF::GetRadarNIS() const {
+  return NIS_radar_;
+}
+
 
 

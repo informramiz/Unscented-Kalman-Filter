@@ -50,6 +50,21 @@ public:
    * @param measurement_package The latest measurement data of either radar or laser
    */
   void ProcessMeasurement(MeasurementPackage measurement_package);
+
+  /**
+     * Returns mean state x
+     */
+    Eigen::VectorXd GetMeanState() const;
+
+    /**
+     * Returns Laser NIS
+     */
+    double GetLaserNIS() const;
+
+    /**
+     * Returns Radar NIS
+     */
+    double GetRadarNIS() const;
 private:
   /**
    * Predicts a single sigma point based on augmented sigma point
@@ -63,11 +78,6 @@ private:
    * to polar coordinates (range=rho, angle=phi, range_rate=rho_dot)
    */
   Eigen::VectorXd MapToPolar(const Eigen::VectorXd& x);
-
-  /**
-   * Returns mean state x
-   */
-  Eigen::VectorXd GetMeanState() const;
 
   ///* initially set to false, set to true in first call of ProcessMeasurement
   bool is_initialized_;
