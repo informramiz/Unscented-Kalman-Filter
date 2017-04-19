@@ -438,11 +438,11 @@ void UKF::ProcessMeasurement(MeasurementPackage measurement_package) {
      double rho_dot = measurement_package.raw_measurements_[2];
 
      //check to avoid division by zero
-     double px = rho * cos(phi);
-     double py = rho * sin(phi);
+     double px = x_(0);
+     double py = x_(1);
      if(px == 0 || py == 0) {
        return;
-     } else if(fabs(px * px + py * py) < 0.0001) {
+     } else if(fabs(sqrt(px * px + py * py)) < 0.0001) {
        return;
      }
 
