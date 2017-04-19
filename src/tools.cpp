@@ -46,12 +46,16 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 }
 
 float Tools::NormalizeAngle(float angle_rad) {
-  //angle normalization
-    while (angle_rad > M_PI)
-      angle_rad -= 2.*M_PI;
-
-    while (angle_rad < -M_PI)
-      angle_rad += 2. * M_PI;
-
-    return angle_rad;
+  angle_rad = angle_rad - 2*M_PI*floor((angle_rad+ M_PI)/(2 * M_PI ));
+  return angle_rad;
 }
+//float Tools::NormalizeAngle(float angle_rad) {
+//  //angle normalization
+//    while (angle_rad > M_PI)
+//      angle_rad -= 2.*M_PI;
+//
+//    while (angle_rad < -M_PI)
+//      angle_rad += 2. * M_PI;
+//
+//    return angle_rad;
+//}
