@@ -141,6 +141,12 @@ private:
 
   ///* the current NIS for laser
   double NIS_laser_;
+
+  ///* Measurement Covariance Matrix for Radar
+  MatrixXd R_radar_;
+
+  ///* Measurement covariance matrix for Laser
+  MatrixXd R_laser_;
 };
 
 
