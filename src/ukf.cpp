@@ -113,8 +113,42 @@ UKF::~UKF() {
   //TODO
 }
 
-void UKF::Init() {
+void UKF::Init(const MeasurementPackage& measurement_package) {
 
+  /**
+   * Initialize the state ekf_.x_ with the first measurement.
+   * Create the covariance matrix.
+   * Remember: you'll need to convert radar from polar to cartesian coordinates.
+   */
+  //first measurement
+  std::cout << "EKF: " << std::endl;
+  x_ = VectorXd(5);
+  x_ << 1, 1, 1, 1, 1;
+
+  if (measurement_package.sensor_type_ == MeasurementPackage::RADAR) {
+    //Convert radar from polar to cartesian coordinates and initialize state.
+    double rho = measurement_package.raw_measurements_[0];
+    double phi = measurement_package.raw_measurements_[1];
+    double px = rho * cos(phi);
+    double py = rho * sin(phi);
+
+    x_ <<  px,
+        py,
+        0,
+        0,
+        0;
+  }
+  else if (measurement_package.sensor_type_ == MeasurementPackage::LASER) {
+    x_ <<  measurement_package.raw_measurements_[0],
+        measurement_package.raw_measurements_[1],
+        0,
+        0,
+        0;
+  }
+
+  // done initializing, no need to predict or update
+  timestamp_ = measurement_package.timestamp_;
+  is_initialized_ = true;
 }
 
 void UKF::GenerateSigmaPoints(MatrixXd * Xsig_out) {
@@ -344,47 +378,12 @@ void UKF::UpdateStateWithRadar(const MatrixXd & Zsig, const VectorXd & z_pred,
  */
 void UKF::ProcessMeasurement(MeasurementPackage measurement_package) {
   /*****************************************************************************
-     *  Initialization
-     ****************************************************************************/
-    if (!is_initialized_) {
-      /**
-       * Initialize the state ekf_.x_ with the first measurement.
-       * Create the covariance matrix.
-       * Remember: you'll need to convert radar from polar to cartesian coordinates.
-       */
-      //first measurement
-      std::cout << "EKF: " << std::endl;
-      x_ = VectorXd(5);
-      x_ << 1, 1, 1, 1, 1;
-
-      if (measurement_package.sensor_type_ == MeasurementPackage::RADAR) {
-        //Convert radar from polar to cartesian coordinates and initialize state.
-        double rho = measurement_package.raw_measurements_[0];
-        double phi = measurement_package.raw_measurements_[1];
-        double px = rho * cos(phi);
-        double py = rho * sin(phi);
-
-        x_ <<  px,
-              py,
-              0,
-              0,
-              0;
-      }
-      else if (measurement_package.sensor_type_ == MeasurementPackage::LASER) {
-        x_ <<  measurement_package.raw_measurements_[0],
-                    measurement_package.raw_measurements_[1],
-                    0,
-                    0,
-                    0;
-      }
-
-      // done initializing, no need to predict or update
-      timestamp_ = measurement_package.timestamp_;
-      is_initialized_ = true;
-      return;
-    }
-
-
+  *  Initialization
+  ****************************************************************************/
+   if (!is_initialized_) {
+     Init(measurement_package);
+     is_initialized_ = true;
+   }
 }
 
 Eigen::VectorXd UKF::GetMeanState() const {

@@ -30,11 +30,6 @@ public:
   virtual ~UKF();
 
   /**
-   * Init Initializes Unscented Kalman filter
-   */
-  void Init();
-
-  /**
    * Following functions define structure of UKF
    * and I will add code to each of them incrementally
    */
@@ -66,6 +61,11 @@ public:
    */
   double GetRadarNIS() const;
 private:
+  /**
+   * Init Initializes Unscented Kalman filter
+   */
+  void Init(const MeasurementPackage& measurement_package);
+
   /**
    * Predicts a single sigma point based on augmented sigma point
    * provided
