@@ -57,6 +57,17 @@ UKF::UKF() {
    * ---End---
    ***********************/
 
+  //initialize measurement covariance matrix for Laser
+  R_laser_ = MatrixXd(2, 2);
+  R_laser_ << std_laser_px_ * std_laser_px_, 0,
+              0, std_laser_py_ * std_laser_py_;
+
+  //initialize measurement covariance matrix for Radar
+  R_radar_ = MatrixXd(3, 3);
+  R_radar_ << std_radar_r_ * std_radar_r_, 0, 0,
+              0, std_radar_phi_ * std_radar_phi_, 0,
+              0, 0, std_radar_rd_ * std_radar_rd_;
+
   NIS_laser_ = 0;
   NIS_radar_ = 0;
 
@@ -84,7 +95,7 @@ UKF::UKF() {
 
   //initialize state mean and convariance
   x_ = VectorXd::Zero(n_x_);
-  P_ = MatrixXd::Zero(n_x_, n_x_);
+  P_ = MatrixXd::Identity(n_x_, n_x_);
 }
 
 UKF::~UKF() {
@@ -646,6 +657,8 @@ void UKF::ProcessMeasurement(MeasurementPackage measurement_package) {
       is_initialized_ = true;
       return;
     }
+
+
 }
 
 Eigen::VectorXd UKF::GetMeanState() const {
