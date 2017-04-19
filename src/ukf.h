@@ -30,6 +30,19 @@ public:
   virtual ~UKF();
 
   /**
+   * Predicts the state mean and covariance matrix
+   * @param delta_t, time difference
+   */
+  void Predict(double delta_t);
+
+  /**
+   * Updates the state mean x and covariance matrix P given
+   * the measurement z
+   * @param z, measurement received from sensor
+   */
+  void Update(const VectorXd& z);
+
+  /**
    * Following functions define structure of UKF
    * and I will add code to each of them incrementally
    */
