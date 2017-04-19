@@ -49,6 +49,14 @@ float Tools::NormalizeAngle(float angle_rad) {
   angle_rad = angle_rad - 2*M_PI*floor((angle_rad+ M_PI)/(2 * M_PI ));
   return angle_rad;
 }
+
+double Tools::CalculateNIS(const VectorXd& z_predicted, const VectorXd& z, const MatrixXd& S) {
+  VectorXd z_diff = z - z_predicted;
+  double NIS = z_diff.transpose() * S.inverse() * z_diff;
+
+  return NIS;
+}
+
 //float Tools::NormalizeAngle(float angle_rad) {
 //  //angle normalization
 //    while (angle_rad > M_PI)

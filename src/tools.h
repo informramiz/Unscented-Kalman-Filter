@@ -25,6 +25,11 @@ public:
    */
   static float NormalizeAngle(float angle_rad);
 
+  /**
+   * A helper method to calculate NIS value
+   * which can be used to verify consistency of filter
+   */
+  static double CalculateNIS(const Eigen::VectorXd& z_predicted, const Eigen::VectorXd& z, const Eigen::MatrixXd& S);
 };
 
 #endif /* TOOLS_H_ */
