@@ -339,8 +339,15 @@ Eigen::VectorXd UKF::MapToPolar(const Eigen::VectorXd& x) {
   return z_predicted;
 }
 
-void UKF::UpdateStateWithRadar(const MatrixXd & Zsig, const VectorXd & z_pred,
-                           const VectorXd & z, const MatrixXd & S) {
+void UKF::UpdateStateWithRadar(const VectorXd & z) {
+
+  VectorXd z_pred = VectorXd(n_z_radar_);
+  MatrixXd Zsig = MatrixXd(n_z_radar_, total_sigma_points_);
+  MatrixXd S = MatrixXd(n_z_radar_, n_z_radar_);
+
+  //predict radar measurement
+  PredictRadarMeasurement(&z_pred, &S, &Zsig);
+
   //create matrix for cross correlation Tc
   MatrixXd Tc = MatrixXd(n_x_, n_z_radar_);
 

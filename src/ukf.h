@@ -50,8 +50,7 @@ public:
   void PredictSigmaPoints(const MatrixXd & Xsig_aug, double delta_t, MatrixXd* Xsig_out);
   void PredictMeanAndCovariance();
   void PredictRadarMeasurement(VectorXd* z_out, MatrixXd* S_out, MatrixXd* Zsig_out);
-  void UpdateStateWithRadar(const MatrixXd & Zsig, const VectorXd & z_pred,
-                        const VectorXd & z, const MatrixXd & S);
+  void UpdateStateWithRadar(const VectorXd & z);
 
   /**
    * ProcessMeasurement
