@@ -67,7 +67,7 @@ private:
   /**
    * Returns mean state x
    */
-  Eigen::VectorXd GetMeanState() const
+  Eigen::VectorXd GetMeanState() const;
 
   ///* initially set to false, set to true in first call of ProcessMeasurement
   bool is_initialized_;
