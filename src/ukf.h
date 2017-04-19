@@ -166,6 +166,9 @@ private:
   ///* Measurement covariance matrix for Laser
   MatrixXd R_laser_;
 
+  ///* state transition matrix for Laser
+  MatrixXd H_laser_;
+
   ///* Noise covariance matrix
   MatrixXd Q_;
 };

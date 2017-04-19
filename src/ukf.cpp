@@ -73,6 +73,11 @@ UKF::UKF() {
   Q_ << std_a_ * std_a_, 0,
         0,  std_yawdd_ * std_yawdd_;
 
+  //initialize the state transition matrix H for laser
+  H_laser_ = MatrixXd(5, 5);
+  H_laser_ << 1, 0, 0, 0, 0,
+              0, 1, 0, 0, 0;
+
   NIS_laser_ = 0;
   NIS_radar_ = 0;
 
