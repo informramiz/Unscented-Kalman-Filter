@@ -383,7 +383,30 @@ void UKF::ProcessMeasurement(MeasurementPackage measurement_package) {
    if (!is_initialized_) {
      Init(measurement_package);
      is_initialized_ = true;
+     return;
    }
+
+   std::cout << "measurement received: " << std::endl;
+   double detla_t = measurement_package.timestamp_ - timestamp_;
+   Predict(detla_t);
+}
+
+void UKF::Predict(double delta_t) {
+  //Generate augmented sigma points
+  MatrixXd Xsig_aug = MatrixXd(n_aug_, total_sigma_points_);
+  GenerateSigmaPoints(&Xsig_aug);
+
+  //Predict sigma points
+  PredictSigmaPoints(Xsig_aug, delta_t, &Xsig_pred_);
+
+  //Predict mean and covariance from sigma points
+  PredictMeanAndCovariance();
+}
+
+void UKF::Update(const VectorXd& z) {
+  //check laser type
+  //call PredictMeasurement____(Radar|Lidar) method
+  //call UpdateStateWith__(Radar|Lidar) method
 }
 
 Eigen::VectorXd UKF::GetMeanState() const {
