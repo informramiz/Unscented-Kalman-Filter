@@ -86,7 +86,7 @@ UKF::UKF() {
   n_z_radar_ = 3;
 
   //laser measurement state dimension
-  n_z_laser = 2;
+  n_z_laser_ = 2;
 
   timestamp_ = 0;
 
@@ -314,7 +314,7 @@ void UKF::UpdateRadarState(const MatrixXd & Zsig, const VectorXd & z_pred,
   MatrixXd W = weights_.transpose().replicate(Xsig_pred_.rows(), 1);
 
   //calculate Cross correlation
-  MatrixXd X_mean_distance = (Xsig_pred_.colwise() - x);
+  MatrixXd X_mean_distance = (Xsig_pred_.colwise() - x_);
   //angle normalization
   for (int i = 0; i < X_mean_distance.cols(); ++i) {
     X_mean_distance.col(i)(3) = Tools::NormalizeAngle(X_mean_distance.col(i)(3));
