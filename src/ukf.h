@@ -12,6 +12,7 @@
 #include <vector>
 #include "Eigen/Dense"
 #include "tools.h"
+#include "measurement_package.h"
 
 using Eigen::VectorXd;
 using Eigen::MatrixXd;
@@ -44,6 +45,11 @@ public:
   void PredictRadarMeasurement(VectorXd* z_out, MatrixXd* S_out);
   void UpdateRadarState(VectorXd* x_out, MatrixXd* P_out);
 
+  /**
+   * ProcessMeasurement
+   * @param measurement_package The latest measurement data of either radar or laser
+   */
+  void ProcessMeasurement(MeasurementPackage measurement_package);
 private:
   /**
    * Predicts a single sigma point based on augmented sigma point

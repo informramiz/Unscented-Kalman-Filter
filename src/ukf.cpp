@@ -33,6 +33,11 @@ UKF::UKF() {
   // Process noise standard deviation yaw acceleration in rad/s^2
   std_yawdd_ = 1;
 
+  /**********************
+   * ---Start---
+   * Below noise values provided by manufacturer and should not be changed
+   ***********************/
+
   // Laser measurement noise standard deviation position1 in m
   std_laser_px_ = 0.15;
 
@@ -47,6 +52,10 @@ UKF::UKF() {
 
   // Radar measurement noise standard deviation radius change in m/s
   std_radar_rd_ = 0.3;
+
+  /**********************
+   * ---End---
+   ***********************/
 
   NIS_laser_ = 0;
   NIS_radar_ = 0;
@@ -590,6 +599,18 @@ void UKF::UpdateRadarState(VectorXd* x_out, MatrixXd* P_out) {
 
       -0.00071719 0.00358884 0.00171811 0.00669426 0.00881797
    * */
+}
+
+/**
+ * @param {MeasurementPackage} measurement_package The latest measurement data of
+ * either radar or laser.
+ */
+void UKF::ProcessMeasurement(MeasurementPackage measurement_package) {
+  /**
+  TODO:
+  Complete this function! Make sure you switch between lidar and radar
+  measurements.
+  */
 }
 
 
