@@ -66,7 +66,7 @@ UKF::UKF() {
   //state mean dimension
   n_x_ = 5;
 
-  time_us_ = 0;
+  timestamp_ = 0;
 
   //calculate total sigma points count
   total_sigma_points_ = 2 * n_aug_ + 1;
