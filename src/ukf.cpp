@@ -381,12 +381,16 @@ void UKF::UpdateStateWithRadar(const VectorXd & z) {
 
   //update state covariance matrix
   P_ = P_ - K * S * K.transpose();
+
+  //update Radar NIS
+  NIS_radar_ = Tools::CalculateNIS(z_pred, z, S);
 }
 
 void UKF::UpdateStateWithLaser(const VectorXd& z) {
   //calculate the difference between
   //predicted and actual measurement
-  VectorXd y = z - H_laser_ * x_;
+  VectorXd z_predicted = H_laser_ * x_;
+  VectorXd y = z - z_predicted;
 
   //calculate Kalman Gain
   MatrixXd S = H_laser_ * P_ * H_laser_.transpose() + R_laser_;
@@ -399,6 +403,9 @@ void UKF::UpdateStateWithLaser(const VectorXd& z) {
   // update the state covariance/uncertainty based on measurement
   MatrixXd I = MatrixXd::Identity(x_.size(), x_.size());
   P_ = (I - K * H_laser_) * P_;
+
+  //update Laser NIS
+  NIS_radar_ = Tools::CalculateNIS(z_predicted, z, S);
 }
 
 /**
