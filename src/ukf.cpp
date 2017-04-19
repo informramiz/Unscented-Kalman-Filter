@@ -136,18 +136,18 @@ void UKF::Init(const MeasurementPackage& measurement_package) {
     double px = rho * cos(phi);
     double py = rho * sin(phi);
 
-    x_ <<  px,
-        py,
-        0,
-        0,
-        0;
+    x_ <<   px,
+            py,
+            0,
+            0,
+            0;
   }
   else if (measurement_package.sensor_type_ == MeasurementPackage::LASER) {
-    x_ <<  measurement_package.raw_measurements_[0],
-        measurement_package.raw_measurements_[1],
-        0,
-        0,
-        0;
+    x_ <<   measurement_package.raw_measurements_[0],
+            measurement_package.raw_measurements_[1],
+            0,
+            0,
+            0;
   }
 
   // done initializing, no need to predict or update
