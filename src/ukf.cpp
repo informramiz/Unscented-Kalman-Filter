@@ -182,7 +182,7 @@ void UKF::GenerateSigmaPoints(MatrixXd * Xsig_out) {
   *Xsig_out = Xsig_aug;
 }
 
-void UKF::SigmaPointPrediction(const MatrixXd & Xsig_aug, double delta_t, MatrixXd* Xsig_out) {
+void UKF::PredictSigmaPoints(const MatrixXd & Xsig_aug, double delta_t, MatrixXd* Xsig_out) {
   //create matrix with predicted sigma points as columns
   MatrixXd Xsig_pred = MatrixXd(n_x_, total_sigma_points_);
 
