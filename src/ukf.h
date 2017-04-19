@@ -52,19 +52,19 @@ public:
   void ProcessMeasurement(MeasurementPackage measurement_package);
 
   /**
-     * Returns mean state x
-     */
-    Eigen::VectorXd GetMeanState() const;
+   * Returns mean state x
+   */
+  Eigen::VectorXd GetMeanState() const;
 
-    /**
-     * Returns Laser NIS
-     */
-    double GetLaserNIS() const;
+  /**
+   * Returns Laser NIS
+   */
+  double GetLaserNIS() const;
 
-    /**
-     * Returns Radar NIS
-     */
-    double GetRadarNIS() const;
+  /**
+   * Returns Radar NIS
+   */
+  double GetRadarNIS() const;
 private:
   /**
    * Predicts a single sigma point based on augmented sigma point
