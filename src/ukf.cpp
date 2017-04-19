@@ -606,11 +606,46 @@ void UKF::UpdateRadarState(VectorXd* x_out, MatrixXd* P_out) {
  * either radar or laser.
  */
 void UKF::ProcessMeasurement(MeasurementPackage measurement_package) {
-  /**
-  TODO:
-  Complete this function! Make sure you switch between lidar and radar
-  measurements.
-  */
+  /*****************************************************************************
+     *  Initialization
+     ****************************************************************************/
+    if (!is_initialized_) {
+      /**
+       * Initialize the state ekf_.x_ with the first measurement.
+       * Create the covariance matrix.
+       * Remember: you'll need to convert radar from polar to cartesian coordinates.
+       */
+      //first measurement
+      std::cout << "EKF: " << std::endl;
+      x_ = VectorXd(5);
+      x_ << 1, 1, 1, 1, 1;
+
+      if (measurement_package.sensor_type_ == MeasurementPackage::RADAR) {
+        //Convert radar from polar to cartesian coordinates and initialize state.
+        double rho = measurement_package.raw_measurements_[0];
+        double phi = measurement_package.raw_measurements_[1];
+        double px = rho * cos(phi);
+        double py = rho * sin(phi);
+
+        x_ <<  px,
+              py,
+              0,
+              0,
+              0;
+      }
+      else if (measurement_package.sensor_type_ == MeasurementPackage::LASER) {
+        x_ <<  measurement_package.raw_measurements_[0],
+                    measurement_package.raw_measurements_[1],
+                    0,
+                    0,
+                    0;
+      }
+
+      // done initializing, no need to predict or update
+      timestamp_ = measurement_package.timestamp_;
+      is_initialized_ = true;
+      return;
+    }
 }
 
 Eigen::VectorXd UKF::GetMeanState() const {
