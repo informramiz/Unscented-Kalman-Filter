@@ -613,5 +613,9 @@ void UKF::ProcessMeasurement(MeasurementPackage measurement_package) {
   */
 }
 
+Eigen::VectorXd UKF::GetMeanState() const {
+  return x_;
+}
+
 
 

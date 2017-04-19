@@ -57,12 +57,17 @@ private:
    * @param x, augmented 7D sigma point
    */
   VectorXd PredictSingleSigmaPoint(const VectorXd & x_aug, double delta_t);
+
   /**
    * Non-linear function h(x) that maps cartesian coordinates @param x =(px, py, vx, vy)
    * to polar coordinates (range=rho, angle=phi, range_rate=rho_dot)
    */
   Eigen::VectorXd MapToPolar(const Eigen::VectorXd& x);
 
+  /**
+   * Returns mean state x
+   */
+  Eigen::VectorXd GetMeanState() const
 
   ///* initially set to false, set to true in first call of ProcessMeasurement
   bool is_initialized_;
