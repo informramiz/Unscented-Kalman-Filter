@@ -112,78 +112,34 @@ void UKF::Init() {
 }
 
 void UKF::GenerateSigmaPoints(MatrixXd * Xsig_out) {
-  //set state dimension
-  int n_x = 5;
-  //set augmented state dimension
-  int n_aug = 7;
-
-  //Process noise standard deviation longitudinal acceleration in m/s^2
-  double std_a = 0.2;
-
-  //Process noise standard deviation yaw acceleration in rad/s^2
-  double std_yawdd = 0.2;
-
-  //Process noise variance longitudinal acceleration
-  double variance_a = std::pow(std_a, 2);
-
-  //Process noise variance yaw acceleration
-  double variance_yawdd = std::pow(std_yawdd, 2);
-
-  //set noise covariance matrix
-  MatrixXd Q = MatrixXd::Zero(2, 2);
-  Q <<    variance_a, 0,
-          0, variance_yawdd;
-
-  //define spreading parameter lamda (design parameter of UKF)
-  double lambda = 3 - n_aug;
-
-  //set example state vector
-  VectorXd x = VectorXd(n_x);
-  x << 5.7441,
-      1.3800,
-      2.2049,
-      0.5015,
-      0.3528;
-
-  //set example covariance matrix
-  MatrixXd P = MatrixXd(n_x, n_x);
-  P <<     0.0043,   -0.0013,    0.0030,   -0.0022,   -0.0020,
-          -0.0013,    0.0077,    0.0011,    0.0071,    0.0060,
-           0.0030,    0.0011,    0.0054,    0.0007,    0.0008,
-          -0.0022,    0.0071,    0.0007,    0.0098,    0.0100,
-          -0.0020,    0.0060,    0.0008,    0.0100,    0.0123;
-
   //create augmented mean vector
-  VectorXd x_aug = VectorXd::Zero(n_aug);
+  VectorXd x_aug = VectorXd::Zero(n_aug_);
   //set augmented mean vector, considering noise mean is zero
-  x_aug.head(5) = x;
+  x_aug.head(5) = x_;
 
   //create augmented covariance matrix with Process Covariance matrix P
   //and process noise covariance matrix Q
-  MatrixXd P_aug = MatrixXd::Zero(n_aug, n_aug);
-  P_aug.topLeftCorner(n_x, n_x) = P;
-  P_aug.bottomRightCorner(2, 2) = Q;
-
-  //calculate total sigma points to generate
-  int total_sigma_points = 2 * n_aug + 1;
+  MatrixXd P_aug = MatrixXd::Zero(n_aug_, n_aug_);
+  P_aug.topLeftCorner(n_x_, n_x_) = P_;
+  P_aug.bottomRightCorner(2, 2) = Q_;
 
   //create a sigma point matrix
-  MatrixXd Xsigma = MatrixXd(n_aug, total_sigma_points);
+  Xsig_pred_ = MatrixXd(n_aug_, total_sigma_points_);
 
   //calculate square root of P_aug by using Cholesky decomposition
   MatrixXd A = P_aug.llt().matrixL();
 
   //calculate sigma points
   //rule part1: first point is mean x so
-  Xsigma.col(0) = x_aug;
+  Xsig_pred_.col(0) = x_aug;
 
   //rule part2: calculate next 1 to n_aug points
-  Xsigma.block(0, 1, n_aug, n_aug) = (sqrt(lambda + n_aug) * A).colwise() + x_aug;
+  Xsig_pred_.block(0, 1, n_aug_, n_aug_) = (std::sqrt(lambda_ + n_aug_) * A).colwise() + x_aug;
 
   //rule part3: calculate next n_aug to 2n_aug points
-  Xsigma.block(0, n_aug + 1, n_aug, n_aug) = ( -1 * sqrt(lambda + n_aug) * A).colwise() + x_aug;
+  Xsig_pred_.block(0, n_aug_ + 1, n_aug_, n_aug_) = ( -1 * sqrt(lambda_ + n_aug_) * A).colwise() + x_aug;
 
-  *Xsig_out = Xsigma;
+//  *Xsig_out = Xsigma;
   /* expected result:
      Xsig_aug =
     5.7441  5.85768   5.7441   5.7441   5.7441   5.7441   5.7441   5.7441  5.63052   5.7441   5.7441   5.7441   5.7441   5.7441   5.7441
