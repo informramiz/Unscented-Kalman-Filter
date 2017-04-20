@@ -19,7 +19,7 @@ A standard Kalman filter can only handle linear equations. Both the extended Kal
 I ran this algorithm on 3 datasets provided in _data_ folder of this repo and generated 3 corresponding output files present in _output_ folder of this repo.
 
 
-### Test Results For Data obj_pose-laser-radar-synthetic-input.txt I
+### Test Results For Data _obj_pose-laser-radar-synthetic-input.txt_
 
 Accuracy - RMSE:
 ```
@@ -36,7 +36,7 @@ Accuracy - RMSE:
 
 ![data_obj_pose](visualization/obj-pose/plot-4.png)
 
-### Test Results For Data **sample-laser-radar-measurement-data-1.txt
+### Test Results For Data _sample-laser-radar-measurement-data-1.txt_
 
 Accuracy - RMSE:
 ```
@@ -54,7 +54,7 @@ Accuracy - RMSE:
 
 ![data_obj_pose](visualization/data1/plot-4.png)
 
-### Test Results For Data sample-laser-radar-measurement-data-2.txt
+### Test Results For Data _sample-laser-radar-measurement-data-2.txt_
 
 ```
 Accuracy - RMSE:
@@ -88,6 +88,13 @@ Eigen::VectorXd x = ukf.GetMeanState();
 std::cout << "Estimated x: " << x << std::endl;
 ```
 
+## Class Details
+
+- **UKF** contains all core code/calculations required for Unscented Kalman Filter like initialization, prediction and update steps of UKF.
+
+- **Tools** contains utility functions to calculate RMSE to evaluate EKF accuracy and to calculate NIS value to check Filter consistency.
+
+
 ## Basic Build Instructions
 
 1. Clone this repo. You can use the build-script.sh to build and run with cmake and make automatically or you can follow steps given below.
@@ -97,13 +104,6 @@ std::cout << "Estimated x: " << x << std::endl;
 4. Run it: `./UnscentedKF path/to/input.txt path/to/output.txt`. You can find
    some sample inputs in 'data/'.
     - eg. `./UnscentedKF ../data/sample-laser-radar-measurement-data-1.txt output.txt`
-
-## Class Details
-
-- **UKF** contains all core code/calculations required for Unscented Kalman Filter like initialization, prediction and update steps of UKF.
-
-- **Tools** contains utility functions to calculate RMSE to evaluate EKF accuracy and to calculate NIS value to check Filter consistency.
-
 
 ## Dependencies
 
@@ -121,5 +121,6 @@ This code uses [Eigen library](http://eigen.tuxfamily.org/index.php?title=Main_P
   * Windows: recommend using [MinGW](http://www.mingw.org/)
   
 ## Possible Issues and Improvements
+
 - For some datasets (e.g., sample-laser-radar-measurement-data-2.txt) my NIS consistency check did not give me good results. It looks like I am overestimating uncertainty for Lidar data and underestimating for Radar data. It can be definitely improved.
 - If there is a division by zero I ignore that measurement update completely. May be there is a better way to handle it.
