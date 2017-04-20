@@ -97,7 +97,7 @@ std::cout << "Estimated x: " << x << std::endl;
 
 ## Basic Build Instructions
 
-1. Clone this repo. You can use the build-script.sh to build and run with cmake and make automatically or you can follow steps given below.
+1. Clone this repo. You can use the _**build-script.sh**_ to build and run with cmake and make automatically or you can follow steps given below.
 2. Make a build directory: `mkdir build && cd build`
 3. Compile: `cmake .. && make` 
    * On windows, you may need to run: `cmake .. -G "Unix Makefiles" && make`
