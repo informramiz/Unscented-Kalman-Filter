@@ -408,7 +408,7 @@ void UKF::UpdateStateWithLaser(const VectorXd& z) {
   P_ = (I - K * H_laser_) * P_;
 
   //update Laser NIS
-  NIS_radar_ = Tools::CalculateNIS(z_predicted, z, S);
+  NIS_laser_ = Tools::CalculateNIS(z_predicted, z, S);
 }
 
 /**
