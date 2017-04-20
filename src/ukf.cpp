@@ -428,6 +428,11 @@ bool UKF::IsSensorEnabled(MeasurementPackage::SensorType sensor_type) {
  * either radar or laser.
  */
 void UKF::ProcessMeasurement(MeasurementPackage measurement_package) {
+  //check to see if sensor type of received measurement is enabled
+  if(!IsSensorEnabled(measurement_package.sensor_type_)) {
+    return;
+  }
+
   /*****************************************************************************
   *  Initialization
   ****************************************************************************/

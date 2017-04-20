@@ -94,6 +94,11 @@ void RunUkf(const vector<MeasurementPackage>& measurement_pack_list,
   //Call the UKF-based fusion
   size_t N = measurement_pack_list.size();
   for (size_t k = 0; k < N; ++k) {
+    //check to see if this sensor type is enabled
+    if(!ukf.IsSensorEnabled(measurement_pack_list[k].sensor_type_)) {
+      continue;
+    }
+
     // start filtering from the second frame (the speed is unknown in the first
     // frame)
     ukf.ProcessMeasurement(measurement_pack_list[k]);
