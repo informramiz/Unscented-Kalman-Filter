@@ -1,4 +1,4 @@
-# Extended-Kalman-Filter (EKF)
+# Unscented Kalman Filter (UKF)
 
 Unscented Kalman Filter in C++ for Lidar and Radar data Sensor Fusion. This implementation of UKF is written in C++, custom and targeted to vehicle localization. It takes data from Lidar and Radar to calculate vehicle position and vehicle velocity.
 
