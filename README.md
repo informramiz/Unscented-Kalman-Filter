@@ -64,6 +64,14 @@ Accuracy - RMSE:
 0.503328
 ```
 
+![data_obj_pose](visualization/data2/plot-1.png)
+
+![data_obj_pose](visualization/data2/plot-2.png)
+
+![data_obj_pose](visualization/data2/plot-3.png)
+
+![data_obj_pose](visualization/data2/plot-4.png)
+
 ## Getting Started
 
 ```
