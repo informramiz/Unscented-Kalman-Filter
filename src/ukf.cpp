@@ -27,11 +27,11 @@ UKF::UKF() {
 
   //TODO: Fine this noise parameter value
   // Process noise standard deviation longitudinal acceleration in m/s^2
-  std_a_ = 2;
+  std_a_ = 0.5;
 
   //TODO: Fine this noise parameter value
   // Process noise standard deviation yaw acceleration in rad/s^2
-  std_yawdd_ = 1;
+  std_yawdd_ = M_PI / 5;
 
   /**********************
    * ---Start---
