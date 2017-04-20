@@ -127,7 +127,7 @@ void UKF::Init(const MeasurementPackage& measurement_package) {
    * Remember: you'll need to convert radar from polar to cartesian coordinates.
    */
   //first measurement
-  std::cout << "EKF: " << std::endl;
+//  std::cout << "EKF: " << std::endl;
   x_ = VectorXd(5);
 
   if (measurement_package.sensor_type_ == MeasurementPackage::RADAR) {
