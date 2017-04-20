@@ -30,6 +30,10 @@ void RunUkf(const vector<MeasurementPackage>& measurement_pack_list,
             const vector<GroundTruthPackage>& gt_pack_list,
             const string& out_file_name);
 
+void RunUkfWithFileOutputOptimizedForPythonVisualization(const vector<MeasurementPackage>& measurement_pack_list,
+            const vector<GroundTruthPackage>& gt_pack_list,
+            const string& out_file_name);
+
 using namespace std;
 
 int main(int argc, char* argv[]) {
@@ -51,7 +55,7 @@ void TestUkf(const string& in_file_name, const string& out_file_name) {
   vector<GroundTruthPackage> gt_pack_list;
   ReadMeasurements(in_file_name, measurement_pack_list, gt_pack_list);
 
-  RunUkf(measurement_pack_list, gt_pack_list, out_file_name);
+  RunUkfWithFileOutputOptimizedForPythonVisualization(measurement_pack_list, gt_pack_list, out_file_name);
 }
 
 void RunUkf(const vector<MeasurementPackage>& measurement_pack_list,
@@ -113,8 +117,8 @@ void RunUkf(const vector<MeasurementPackage>& measurement_pack_list,
       out_file << ukf.GetLaserNIS() << "\t";
 
       // output the estimation
-      out_file << measurement_pack_list[k].raw_measurements_(0) << "\t";
-      out_file << measurement_pack_list[k].raw_measurements_(1) << "\t";
+      out_file << measurement_pack_list[k].raw_measurements_(0) << "\t"; //p1_meas
+      out_file << measurement_pack_list[k].raw_measurements_(1) << "\t"; //p2_meas
 
     } else if (measurement_pack_list[k].sensor_type_ == MeasurementPackage::RADAR) {
       // sensor type
@@ -131,10 +135,101 @@ void RunUkf(const vector<MeasurementPackage>& measurement_pack_list,
     }
 
     // output the ground truth packages
-    out_file << gt_pack_list[k].gt_values_(0) << "\t";
-    out_file << gt_pack_list[k].gt_values_(1) << "\t";
-    out_file << gt_pack_list[k].gt_values_(2) << "\t";
-    out_file << gt_pack_list[k].gt_values_(3) << "\n";
+    out_file << gt_pack_list[k].gt_values_(0) << "\t"; //p1
+    out_file << gt_pack_list[k].gt_values_(1) << "\t"; //p2
+    out_file << gt_pack_list[k].gt_values_(2) << "\t"; //vx
+    out_file << gt_pack_list[k].gt_values_(3) << "\n"; //vy
+
+    // convert ukf x vector to cartesian to compare to ground truth
+    VectorXd ukf_x_cartesian_ = VectorXd(4);
+
+    x = ukf.GetMeanState();
+    float x_estimate_ = x(0);
+    float y_estimate_ = x(1);
+    float vx_estimate_ = x(2) * cos(x(3));
+    float vy_estimate_ = x(2) * sin(x(3));
+
+    ukf_x_cartesian_ << x_estimate_, y_estimate_, vx_estimate_, vy_estimate_;
+
+    estimations.push_back(ukf_x_cartesian_);
+    ground_truth.push_back(gt_pack_list[k].gt_values_);
+  }
+
+  // compute the accuracy (RMSE)
+  cout << "Accuracy - RMSE:" << endl << Tools::CalculateRMSE(estimations, ground_truth) << endl;
+
+  if (out_file.is_open()) {
+    out_file.close();
+  }
+}
+
+
+void RunUkfWithFileOutputOptimizedForPythonVisualization(const vector<MeasurementPackage>& measurement_pack_list,
+            const vector<GroundTruthPackage>& gt_pack_list,
+            const string& out_file_name) {
+
+  ofstream out_file(out_file_name, ofstream::out);
+  if (!out_file.is_open()) {
+    std::cerr << "Error opening file: " << out_file_name << std::endl;
+    exit(EXIT_FAILURE);
+  }
+
+  // Create a UKF instance
+  UKF ukf;
+
+  // used to compute the RMSE later
+  vector<VectorXd> estimations;
+  vector<VectorXd> ground_truth;
+
+  //Call the UKF-based fusion
+  size_t N = measurement_pack_list.size();
+  for (size_t k = 0; k < N; ++k) {
+    // start filtering from the second frame (the speed is unknown in the first
+    // frame)
+    ukf.ProcessMeasurement(measurement_pack_list[k]);
+
+    // timestamp
+    out_file << measurement_pack_list[k].timestamp_ << "\t"; // pos1 - est
+
+    // output the estimation
+    VectorXd x = ukf.GetMeanState();
+    out_file << x(0) << "\t"; //px
+    out_file << x(1) << "\t"; //py
+    out_file << x(2) << "\t"; //speed
+    out_file << x(3) << "\t"; //yaw
+    out_file << x(4) << "\t"; //yaw_rate
+
+    double NIS_laser = 0;
+    double NIS_radar = 0;
+
+    // output the measurements
+    if (measurement_pack_list[k].sensor_type_ == MeasurementPackage::LASER) {
+      // NIS value
+      NIS_laser = ukf.GetLaserNIS();
+
+      // output the estimation
+      out_file << measurement_pack_list[k].raw_measurements_(0) << "\t"; //p1_meas
+      out_file << measurement_pack_list[k].raw_measurements_(1) << "\t"; //p2_meas
+
+    } else if (measurement_pack_list[k].sensor_type_ == MeasurementPackage::RADAR) {
+      // NIS value
+      NIS_radar = ukf.GetRadarNIS();
+
+      // output the estimation in the cartesian coordinates
+      float ro = measurement_pack_list[k].raw_measurements_(0);
+      float phi = measurement_pack_list[k].raw_measurements_(1);
+      out_file << ro * cos(phi) << "\t"; // p1_meas
+      out_file << ro * sin(phi) << "\t"; // ps_meas
+    }
+
+    // output the ground truth packages
+    out_file << gt_pack_list[k].gt_values_(0) << "\t"; //p1
+    out_file << gt_pack_list[k].gt_values_(1) << "\t"; //p2
+    out_file << gt_pack_list[k].gt_values_(2) << "\t"; //vx
+    out_file << gt_pack_list[k].gt_values_(3) << "\t"; //vy
+
+    out_file << NIS_laser << "\t";
+    out_file << NIS_radar << "\n";
 
     // convert ukf x vector to cartesian to compare to ground truth
     VectorXd ukf_x_cartesian_ = VectorXd(4);
