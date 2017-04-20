@@ -121,5 +121,5 @@ This code uses [Eigen library](http://eigen.tuxfamily.org/index.php?title=Main_P
   * Windows: recommend using [MinGW](http://www.mingw.org/)
   
 ## Possible Issues and Improvements
-- For the very first measurement, I just initialize the `timestamp` and state vector `x` and there is no prediction as right now my state Transition matrix F depends on timestamp difference (`delta_t`). 
-- When calculating Jacobian, if there is a division by zero I ignore that measurement update completely. May be there is a better way to handle it.
+- For some datasets (e.g., sample-laser-radar-measurement-data-2.txt) my NIS consistency check did not give me good results. It looks like I am overestimating uncertainty for Lidar data and underestimating for Radar data. It can be definitely improved.
+- If there is a division by zero I ignore that measurement update completely. May be there is a better way to handle it.
