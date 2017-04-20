@@ -19,7 +19,7 @@ A standard Kalman filter can only handle linear equations. Both the extended Kal
 I ran this algorithm on 3 datasets provided in _data_ folder of this repo and generated 3 corresponding output files present in _output_ folder of this repo.
 
 
-- For input data file **obj_pose-laser-radar-synthetic-input.txt** I got following results:
+### Test Results For Data obj_pose-laser-radar-synthetic-input.txt I
 
 Accuracy - RMSE:
 ```
@@ -36,7 +36,7 @@ Accuracy - RMSE:
 
 ![data_obj_pose](visualization/obj-pose/plot-4.png)
 
-- For input file **sample-laser-radar-measurement-data-1** I got following results:
+### Test Results For Data **sample-laser-radar-measurement-data-1.txt
 
 Accuracy - RMSE:
 ```
@@ -54,7 +54,7 @@ Accuracy - RMSE:
 
 ![data_obj_pose](visualization/data1/plot-4.png)
 
-- For input file **sample-laser-radar-measurement-data-2** I got following results:
+### Test Results For Data sample-laser-radar-measurement-data-2.txt
 
 ```
 Accuracy - RMSE:
