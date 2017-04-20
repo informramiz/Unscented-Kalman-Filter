@@ -429,7 +429,6 @@ void UKF::ProcessMeasurement(MeasurementPackage measurement_package) {
 
    //compute the time elapsed between the current and previous measurements in seconds
    double detla_t = (measurement_package.timestamp_ - timestamp_) / 1000000.0;
-
    //update timestamp to new measurement received timestamp
    timestamp_ = measurement_package.timestamp_;
 
@@ -483,9 +482,11 @@ void UKF::Update(const VectorXd& z, MeasurementPackage::SensorType sensor_type) 
     //call UpdateStateWith__(Radar|Lidar) method
   if(sensor_type == MeasurementPackage::RADAR) {
     UpdateStateWithRadar(z);
+//    std::cout << "NIS_Radar: " << NIS_radar_ << std::endl;
   }
   else if(sensor_type == MeasurementPackage::LASER) {
     UpdateStateWithLaser(z);
+//    std::cout << "NIS_Laser: " << NIS_laser_ << std::endl;
   }
 }
 
