@@ -55,7 +55,7 @@ void TestUkf(const string& in_file_name, const string& out_file_name) {
   vector<GroundTruthPackage> gt_pack_list;
   ReadMeasurements(in_file_name, measurement_pack_list, gt_pack_list);
 
-  RunUkf(measurement_pack_list, gt_pack_list, out_file_name);
+  RunUkfWithFileOutputOptimizedForPythonVisualization(measurement_pack_list, gt_pack_list, out_file_name);
 }
 
 void RunUkf(const vector<MeasurementPackage>& measurement_pack_list,
@@ -187,9 +187,6 @@ void RunUkfWithFileOutputOptimizedForPythonVisualization(const vector<Measuremen
     // start filtering from the second frame (the speed is unknown in the first
     // frame)
     ukf.ProcessMeasurement(measurement_pack_list[k]);
-
-    // timestamp
-    out_file << measurement_pack_list[k].timestamp_ << "\t"; // pos1 - est
 
     // output the estimation
     VectorXd x = ukf.GetMeanState();
