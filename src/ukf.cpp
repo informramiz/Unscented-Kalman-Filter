@@ -378,7 +378,9 @@ void UKF::UpdateStateWithRadar(const VectorXd & z) {
   MatrixXd K = Tc * S.inverse();
 
   //update state mean
-  x_ = x_ + K * (z - z_pred);
+  VectorXd y = (z - z_pred);
+  y(1) = Tools::NormalizeAngle(y(1));
+  x_ = x_ + K * y;
 
   //update state covariance matrix
   P_ = P_ - K * S * K.transpose();
