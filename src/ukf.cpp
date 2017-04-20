@@ -112,6 +112,7 @@ UKF::UKF() {
   //initialize state mean and convariance
   x_ = VectorXd::Zero(n_x_);
   P_ = MatrixXd::Identity(n_x_, n_x_);
+  P_.diagonal().fill(0.5);
 }
 
 UKF::~UKF() {
