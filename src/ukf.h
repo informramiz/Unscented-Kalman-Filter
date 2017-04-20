@@ -73,6 +73,12 @@ public:
    * Returns Radar NIS
    */
   double GetRadarNIS() const;
+
+  /**
+   * Helper function to decide whether to use a given
+   * sensor type (lidar, radar) data or not
+   */
+  bool IsSensorEnabled(MeasurementPackage::SensorType sensor_type);
 private:
   /**
    * Init Initializes Unscented Kalman filter

@@ -411,6 +411,18 @@ void UKF::UpdateStateWithLaser(const VectorXd& z) {
   NIS_laser_ = Tools::CalculateNIS(z_predicted, z, S);
 }
 
+bool UKF::IsSensorEnabled(MeasurementPackage::SensorType sensor_type) {
+  if (sensor_type == MeasurementPackage::LASER
+      && use_laser_) {
+    return true;
+  } else if (sensor_type == MeasurementPackage::RADAR
+      && use_radar_) {
+    return true;
+  }
+
+  return false;
+}
+
 /**
  * @param {MeasurementPackage} measurement_package The latest measurement data of
  * either radar or laser.
