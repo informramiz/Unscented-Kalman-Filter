@@ -55,7 +55,7 @@ void TestUkf(const string& in_file_name, const string& out_file_name) {
   vector<GroundTruthPackage> gt_pack_list;
   ReadMeasurements(in_file_name, measurement_pack_list, gt_pack_list);
 
-  RunUkfWithFileOutputOptimizedForPythonVisualization(measurement_pack_list, gt_pack_list, out_file_name);
+  RunUkf(measurement_pack_list, gt_pack_list, out_file_name);
 }
 
 void RunUkf(const vector<MeasurementPackage>& measurement_pack_list,
