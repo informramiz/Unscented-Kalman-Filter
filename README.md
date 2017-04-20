@@ -28,13 +28,13 @@ Accuracy - RMSE:
 0.276432
 0.183529
 ```
-![data_obj_pose](visualization/obj_pose/plot-1.png)
+![data_obj_pose](visualization/obj-pose/plot-1.png)
 
-![data_obj_pose](visualization/obj_pose/plot-2.png)
+![data_obj_pose](visualization/obj-pose/plot-2.png)
 
-![data_obj_pose](visualization/obj_pose/plot-3.png)
+![data_obj_pose](visualization/obj-pose/plot-3.png)
 
-![data_obj_pose](visualization/obj_pose/plot-4.png)
+![data_obj_pose](visualization/obj-pose/plot-4.png)
 
 - For input file **sample-laser-radar-measurement-data-1** I got following results:
 
