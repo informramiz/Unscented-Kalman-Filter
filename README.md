@@ -107,7 +107,7 @@ std::cout << "Estimated x: " << x << std::endl;
 
 ## Dependencies
 
-This code uses [Eigen library](http://eigen.tuxfamily.org/index.php?title=Main_Page). I have also added this library to repo for convinience. You can also download it directly to get its latest version.
+* This code uses [Eigen library](http://eigen.tuxfamily.org/index.php?title=Main_Page). I have also added this library to repo for convinience. You can also download it directly to get its latest version.
 
 * cmake >= 3.5
  * All OSes: [click here for installation instructions](https://cmake.org/install/)
