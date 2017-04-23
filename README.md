@@ -102,6 +102,10 @@ std::cout << "Estimated x: " << x << std::endl;
 
 - **Tools** contains utility functions to calculate RMSE to evaluate EKF accuracy and to calculate NIS value to check Filter consistency.
 
+## Learn the Math Behind UKF
+
+You can find many lectures on UKF on the web. You can view my [notes](https://drive.google.com/open?id=0Bxv9kPZMr-zbU3BhNkhXTXhYbDg) for UKF. You can also view some brief [notes](https://drive.google.com/open?id=0BzhenLaF0FKGSHhhVkNLUEVYcDQ) written by a Udacity student (I forgot the name).
+
 
 ## Basic Build Instructions
 
